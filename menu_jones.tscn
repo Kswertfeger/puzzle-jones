@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=3 uid="uid://cke82cbvh20f1"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_ugsdg"]
+[ext_resource type="Script" path="res://player.gd" id="2_oqpnu"]
+[ext_resource type="Texture2D" uid="uid://bgvshdus00qsn" path="res://sprites/Crate.png" id="3_n00ib"]
+[ext_resource type="Texture2D" uid="uid://dwky8vr6xuuoy" path="res://sprites/unpressed_button.png" id="4_st87c"]
+[ext_resource type="Texture2D" uid="uid://cdvhkxpfxnh26" path="res://sprites/puzzle_jones.png" id="5_ftk55"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8o26g"]
+radius = 14.1421
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_5efqw"]
+resource_name = "Crate"
+friction = 10.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nacqr"]
+size = Vector2(86, 87)
+
+[node name="level-jones" type="Node2D"]
+script = ExtResource("1_ugsdg")
+
+[node name="UnpressedButton" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(680, 495)
+texture = ExtResource("4_st87c")
+
+[node name="player" type="CharacterBody2D" parent="."]
+z_index = 1
+position = Vector2(924, 345)
+collision_layer = 3
+script = ExtResource("2_oqpnu")
+
+[node name="PuzzleJones" type="Sprite2D" parent="player"]
+z_index = -1
+position = Vector2(7, 0)
+texture = ExtResource("5_ftk55")
+
+[node name="PlayerCollision" type="CollisionPolygon2D" parent="player"]
+position = Vector2(-584, -155)
+polygon = PackedVector2Array(576, 141, 564, 140, 563, 146, 571, 168, 590, 168, 606, 168, 616, 155, 616, 141, 611, 142, 601, 142)
+
+[node name="Camera2D" type="Camera2D" parent="player"]
+position = Vector2(1, 5)
+
+[node name="collisions" type="StaticBody2D" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(679, 487)
+shape = SubResource("CircleShape2D_8o26g")
+
+[node name="MoveableCrate" type="RigidBody2D" parent="."]
+z_index = -1
+collision_layer = 2
+physics_material_override = SubResource("PhysicsMaterial_5efqw")
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 10.0
+
+[node name="crate_collision" type="CollisionShape2D" parent="MoveableCrate"]
+position = Vector2(345, 352)
+shape = SubResource("RectangleShape2D_nacqr")
+
+[node name="Crate" type="Sprite2D" parent="MoveableCrate"]
+position = Vector2(345, 352)
+texture = ExtResource("3_n00ib")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
